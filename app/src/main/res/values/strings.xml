@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">News App</string>
+    <string name="news_app_logo">News app logo</string>
+    <string name="news_app_signature">News app signature</string>
+</resources>

@@ -4,4 +4,12 @@
     <string name="news_app_signature">News app signature</string>
     <string name="search_icon">Search Icon</string>
     <string name="menu_icon">Menu Icon</string>
+    <string name="home">Home</string>
+    <string name="business">Business</string>
+    <string name="entertainment">Entertainment</string>
+    <string name="general">General</string>
+    <string name="health">Health</string>
+    <string name="science">Science</string>
+    <string name="sports">Sports</string>
+    <string name="technology">Technology</string>
 </resources>

@@ -6,18 +6,19 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -28,6 +29,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -43,7 +47,6 @@ import com.example.newsapp.ui.theme.NewsAppTheme
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.util.Locale
 
 class MainActivity : ComponentActivity() {
     private val TAG = "MainActivity"
@@ -124,12 +127,8 @@ fun CategoryItem(category: CategoryItemDM, index: Int, modifier: Modifier = Modi
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.onBackground,
             contentColor = MaterialTheme.colorScheme.background,
-        ),
-        modifier = modifier.padding(
-            start = 16.dp,
-            end = 16.dp,
-            top = 8.dp,
-            bottom = 8.dp
+        ), modifier = modifier.padding(
+            start = 16.dp, end = 16.dp, top = 8.dp, bottom = 8.dp
         )
     ) {
         if (index % 2 == 0) {
@@ -142,44 +141,120 @@ fun CategoryItem(category: CategoryItemDM, index: Int, modifier: Modifier = Modi
 
 @Composable
 fun ColumnScope.EvenCategoryItem(item: CategoryItemDM, modifier: Modifier = Modifier) {
-    Row(modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween ,
-        verticalAlignment = Alignment.CenterVertically){
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         Image(
             painter = painterResource(id = item.image!!),
             contentDescription = null,
             modifier = Modifier.width(150.dp)
         )
 
-        Column(modifier = Modifier.padding( start = 10.dp) ,
-            verticalArrangement = Arrangement.SpaceAround) {
-            Text(stringResource(item.title!!), style = MaterialTheme.typography.titleMedium
-            , fontWeight = FontWeight.W600 , fontSize = 30.sp)
+        // Category Name and View All
+        Column(
+            modifier = Modifier.padding(start = 10.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                stringResource(item.title!!),
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.W600,
+                fontSize = 30.sp
+            )
 
-            Image(contentDescription = "" , painter = painterResource(id = R.drawable.ic_app_logo))
+            // View All Component
+            Row(
+                modifier = Modifier
+                    .padding(15.dp)
+                    .background(
+                        shape = CircleShape,
+                        color = if (isSystemInDarkTheme()) Color.DarkGray else Color.LightGray
+                    ), verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    "View All",
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.W600,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    modifier = Modifier.padding(horizontal = 10.dp)
+                )
+                Image(
+                    contentDescription = "",
+                    painter = painterResource(id = R.drawable.view_all_arrow),
+                    modifier = Modifier
+                        .width(50.dp)
+                        .background(
+                            shape = CircleShape, color = MaterialTheme.colorScheme.background
+                        ),
+                    contentScale = ContentScale.FillWidth,
+                    colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onBackground)
+                )
+            }
         }
     }
 }
 
 @Composable
 fun ColumnScope.OddCategoryItem(item: CategoryItemDM, modifier: Modifier = Modifier) {
-    Row(modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween) {
-        Column(modifier = Modifier.padding( start = 10.dp) ,
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Column(
+            modifier = Modifier.padding(start = 10.dp),
             verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(stringResource(item.title!!), style = MaterialTheme.typography.titleMedium
-                , fontWeight = FontWeight.W600 , fontSize = 30.sp)
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                stringResource(item.title!!),
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.W600,
+                fontSize = 30.sp
+            )
 
-            Image(contentDescription = "" , painter = painterResource(id = R.drawable.ic_app_logo))
+            // View All Component
+            Row(
+                modifier = Modifier
+                    .padding(15.dp)
+                    .background(
+                        shape = CircleShape,
+                        color = if (isSystemInDarkTheme()) Color.DarkGray else Color.LightGray
+                    ), verticalAlignment = Alignment.CenterVertically
+            ) {
+                Image(
+                    contentDescription = "",
+                    painter = painterResource(id = R.drawable.view_all_arrow),
+                    modifier = Modifier
+                        .width(50.dp)
+                        .background(
+                            shape = CircleShape, color = MaterialTheme.colorScheme.background
+                        )
+                        .graphicsLayer(rotationY = 180f),
+                    contentScale = ContentScale.FillWidth,
+                    colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onBackground)
+                )
+
+                Text(
+                    "View All",
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.W600,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    modifier = Modifier.padding(horizontal = 10.dp)
+                )
+            }
         }
 
         Image(
             painter = painterResource(id = item.image!!),
             contentDescription = null,
-            modifier = Modifier.width(200.dp)
+            modifier = Modifier
+                .padding(top = 20.dp)
+                .width(200.dp)
         )
-
     }
 }
 

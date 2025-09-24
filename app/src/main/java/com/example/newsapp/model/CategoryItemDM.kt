@@ -1,7 +1,9 @@
 package com.example.newsapp.model
 
 import com.example.newsapp.R
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class CategoryItemDM(
     val title: Int? = null,
     val image: Int? = null,

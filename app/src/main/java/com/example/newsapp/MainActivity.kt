@@ -80,12 +80,12 @@ class MainActivity : ComponentActivity() {
                         .fillMaxSize()
                         .navigationBarsPadding(), bottomBar = {
 
-                    }, topBar = {
-                        NewsToolbar(
-                            title = title.value,
-                            onMenuButtonClicked = {},
-                            onSearchButtonClicked = {})
-                    }) { innerPadding ->
+                }, topBar = {
+                    NewsToolbar(
+                        title = title.value,
+                        onMenuButtonClicked = {},
+                        onSearchButtonClicked = {})
+                }) { innerPadding ->
                     NavHost(
                         modifier = Modifier.padding(top = innerPadding.calculateTopPadding()),
                         navController = navController,
@@ -98,31 +98,12 @@ class MainActivity : ComponentActivity() {
 
                         composable<NewsDestinations> {
                             val category = it.toRoute<CategoryItemDM>()
-
+                            title.value = stringResource(id = category.title!!)
+                            NewsScreen(category = category)
                         }
                     }
                 }
             }
-        }
-
-        fun getSources() {
-            ApiManager.webServices().getNewsSources().enqueue(object : Callback<SourcesResponse> {
-                override fun onResponse(
-                    call: Call<SourcesResponse?>, response: Response<SourcesResponse?>
-                ) {
-                    if (response.isSuccessful) {
-                        val responseBody = response.body()
-                        Log.i(TAG, "onResponse: $responseBody")
-                    } else {
-                        val errorBody = response.errorBody()
-                        Log.e(TAG, "onResponse: $errorBody")
-                    }
-                }
-
-                override fun onFailure(call: Call<SourcesResponse>, t: Throwable) {
-                    Log.e(TAG, "onFailure: ${t.message}")
-                }
-            })
         }
     }
 }

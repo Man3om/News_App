@@ -9,6 +9,7 @@ interface WebServices {
 
     @GET("v2/top-headlines/sources")
     fun getNewsSources(
-        @Query("apiKey") apiKey: String = "06d492c0e0074c2ba430339bf1839078"
+        @Query("apiKey") apiKey: String = "06d492c0e0074c2ba430339bf1839078",
+        @Query("category") categoryApiId: String? = null
     ): Call<SourcesResponse>
 }

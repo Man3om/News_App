@@ -38,7 +38,7 @@ import com.example.newsapp.ui.destinations.NewsDestinations
 
 
 @Composable
-fun CategoriesScreen(modifier: Modifier = Modifier , navHostController: NavHostController) {
+fun CategoriesScreen(modifier: Modifier = Modifier, navHostController: NavHostController) {
     Column(modifier = modifier) {
         Text(
             "Good Morning\n Here is Some News For You",
@@ -52,13 +52,13 @@ fun CategoriesScreen(modifier: Modifier = Modifier , navHostController: NavHostC
 }
 
 @Composable
-fun CategoryList(modifier: Modifier = Modifier , navHostController: NavHostController) {
+fun CategoryList(modifier: Modifier = Modifier, navHostController: NavHostController) {
     val categories = CategoryItemDM.getCategories()
     LazyColumn {
         itemsIndexed(categories) { index, item ->
-            CategoryItem(category = item, index = index, onCategoryClick = {item ->
-                Log.i("TAG", "CategorySelected: ${item.title}")
-                navHostController.navigate(NewsDestinations(item))
+            CategoryItem(category = item, index = index, onCategoryClick = { item ->
+                Log.i("TAG", "CategorySelected: ${item.apiID}")
+                navHostController.navigate(NewsDestinations(item.apiID ?: ""))
             })
         }
     }
@@ -78,11 +78,10 @@ fun CategoryItem(
             contentColor = MaterialTheme.colorScheme.background,
         ), modifier = modifier.padding(
             start = 16.dp, end = 16.dp, top = 8.dp, bottom = 8.dp
-        ),
-        onClick = {
+        ), onClick = {
             onCategoryClick(category)
-        }
-    ) {
+        }) {
+
         if (index % 2 == 0) {
             EvenCategoryItem(category)
         } else {
@@ -203,8 +202,7 @@ fun ColumnScope.OddCategoryItem(item: CategoryItemDM, modifier: Modifier = Modif
         Image(
             painter = painterResource(id = item.image!!),
             contentDescription = null,
-            modifier = Modifier
-                .fillMaxSize()
+            modifier = Modifier.fillMaxSize()
         )
     }
 }

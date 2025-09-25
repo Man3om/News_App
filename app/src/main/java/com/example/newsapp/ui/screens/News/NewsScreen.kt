@@ -31,6 +31,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -91,7 +92,9 @@ fun NewsCard(modifier: Modifier = Modifier, article: ArticlesItem) {
             contentDescription = "Translated description of what the image contains",
             modifier = Modifier
                 .padding(10.dp)
-                .clip(shape = RoundedCornerShape(8.dp))
+                .clip(shape = RoundedCornerShape(8.dp)),
+            alignment = Alignment.Center,
+            contentScale = ContentScale.Crop,
         )
         //Text
         Text(

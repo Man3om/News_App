@@ -46,6 +46,13 @@ android {
 
 dependencies {
 
+
+    // Lifecycle utilities for Compose
+    implementation(libs.androidx.lifecycle.runtime.compose)
+    // ViewModel
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    // ViewModel utilities for Compose
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
     // Jetpack Compose integration
     implementation(libs.androidx.navigation.compose)
     implementation(libs.compose)

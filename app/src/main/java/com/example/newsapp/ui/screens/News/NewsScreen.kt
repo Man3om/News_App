@@ -38,6 +38,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.volley.toolbox.ImageRequest
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
@@ -51,18 +52,10 @@ import retrofit2.Callback
 import retrofit2.Response
 
 @Composable
-fun NewsScreen(category: String, modifier: Modifier = Modifier) {
-    val news = remember {
-        mutableStateListOf<ArticlesItem>()
-    }
-
+fun NewsScreen(category: String, modifier: Modifier = Modifier , viewModel: NewsViewModel = viewModel()) {
     Column(modifier.fillMaxSize()) {
-        NewsSourcesTopRow(category) {
-            news.clear()
-            news.addAll(it)
-        }
-
-        NewsLazyColumn(news)
+        NewsSourcesTopRow(category)
+        NewsLazyColumn(viewModel.articlesList)
     }
 }
 
@@ -142,33 +135,30 @@ fun NewsCard(modifier: Modifier = Modifier, article: ArticlesItem) {
 fun NewsSourcesTopRow(
     categoryApiId: String,
     modifier: Modifier = Modifier,
-    onUpdateNewsList: (List<ArticlesItem>) -> Unit
+    viewModel: NewsViewModel = viewModel()
 ) {
-    val newsSources = remember {
-        mutableStateListOf<SourcesItem>()
-    }
-
     var selectedIndex by remember {
-        mutableIntStateOf(0)
+        mutableIntStateOf(-1)
     }
 
     LaunchedEffect(Unit) {
-        getSources(categoryApiId) {
-            newsSources.clear()
-            newsSources.addAll(it)
+        viewModel.getSources(categoryApiId)
+    }
+
+    LaunchedEffect(viewModel.sourcesList.isNotEmpty()) {
+        if(viewModel.sourcesList.isNotEmpty()){
+            viewModel.getNewsBySourceId(viewModel.sourcesList[0].id.toString())
+            selectedIndex = 0
         }
     }
 
     LazyRow(modifier) {
-        itemsIndexed(newsSources) { index, item ->
+        itemsIndexed(viewModel.sourcesList) { index, item ->
             SourceItem(
                 item = item, index = index, selectedIndex = selectedIndex
             ) { item ->
                 selectedIndex = index
-                getNewsBySourceId(item.id.toString()) {
-                    Log.d("News API", "Selected Source: ${item.name}")
-                    onUpdateNewsList(it)
-                }
+                viewModel.getNewsBySourceId(item.id.toString())
             }
         }
     }
@@ -201,57 +191,4 @@ fun SourceItem(
             }
             .padding(horizontal = 8.dp, vertical = 5.dp),
         textDecoration = if (selectedIndex == index) TextDecoration.Underline else TextDecoration.None)
-}
-
-fun getSources(categoryApiId: String, onSuccess: (List<SourcesItem>) -> Unit) {
-    val TAG = "Sources API"
-
-    ApiManager.webServices().getNewsSources(categoryApiId = categoryApiId)
-        .enqueue(object : Callback<SourcesResponse> {
-            override fun onResponse(
-                call: Call<SourcesResponse?>, response: Response<SourcesResponse?>
-            ) {
-                if (response.isSuccessful) {
-                    val responseBody = response.body()
-                    Log.i(TAG, "onResponse: ${responseBody?.status}")
-                    Log.i(TAG, "onResponse: ${responseBody?.sources}")
-
-                    onSuccess(responseBody?.sources ?: listOf())
-                } else {
-                    val errorBody = response.errorBody()
-                    Log.e(TAG, "onResponse: $errorBody")
-                }
-            }
-
-            override fun onFailure(call: Call<SourcesResponse>, t: Throwable) {
-                Log.e(TAG, "onFailure: ${t.message}")
-            }
-        })
-}
-
-fun getNewsBySourceId(sourceId: String, onSuccess: (List<ArticlesItem>) -> Unit) {
-    ApiManager.webServices().getNewsBySource(sources = sourceId)
-        .enqueue(object : Callback<EverythingResponse> {
-            override fun onResponse(
-                call: Call<EverythingResponse?>, response: Response<EverythingResponse?>
-            ) {
-                if (response.isSuccessful) {
-                    val responseBody = response.body()
-                    Log.i("News API", "onResponse: ${responseBody?.status}")
-                    Log.i("News API", "onResponse: ${responseBody?.articles}")
-                    onSuccess(responseBody?.articles ?: listOf())
-                } else {
-                    val errorBody = response.errorBody()
-                    Log.e("News API", "onResponse: $errorBody")
-                }
-            }
-
-            override fun onFailure(
-                call: Call<EverythingResponse?>, t: Throwable
-            ) {
-                Log.e("News API", "onFailure: ${t.message}")
-            }
-
-        })
-
 }

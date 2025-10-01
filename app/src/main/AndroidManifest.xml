@@ -13,12 +13,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.NewsApp">
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.mainActivity.MainActivity"
             android:exported="true"
             android:theme="@style/Theme.NewsApp">
         </activity>
         <activity
-            android:name=".splash.SplashActivity"
+            android:name=".ui.splash.SplashActivity"
             android:exported="true"
             android:theme="@style/Theme.NewsApp">
             <intent-filter>

@@ -1,7 +1,6 @@
-package com.example.newsapp
+package com.example.newsapp.ui.mainActivity
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -17,6 +16,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import com.example.newsapp.R
 import com.example.newsapp.ui.components.NewsToolbar
 import com.example.newsapp.ui.destinations.CategoriesDestinations
 import com.example.newsapp.ui.destinations.NewsDestinations
@@ -40,18 +40,18 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
 
                 Scaffold(
-                    modifier = Modifier
+                    modifier = Modifier.Companion
                         .fillMaxSize()
                         .navigationBarsPadding(), bottomBar = {
 
-                }, topBar = {
-                    NewsToolbar(
-                        title = title.value,
-                        onMenuButtonClicked = {},
-                        onSearchButtonClicked = {})
-                }) { innerPadding ->
+                    }, topBar = {
+                        NewsToolbar(
+                            title = title.value,
+                            onMenuButtonClicked = {},
+                            onSearchButtonClicked = {})
+                    }) { innerPadding ->
                     NavHost(
-                        modifier = Modifier.padding(top = innerPadding.calculateTopPadding()),
+                        modifier = Modifier.Companion.padding(top = innerPadding.calculateTopPadding()),
                         navController = navController,
                         startDestination = CategoriesDestinations
                     ) {
@@ -71,4 +71,3 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-

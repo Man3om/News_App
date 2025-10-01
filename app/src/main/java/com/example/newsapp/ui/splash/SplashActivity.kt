@@ -1,4 +1,4 @@
-package com.example.newsapp.splash
+package com.example.newsapp.ui.splash
 
 import android.content.Intent
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
@@ -21,7 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.newsapp.MainActivity
+import com.example.newsapp.ui.mainActivity.MainActivity
 import com.example.newsapp.R
 import com.example.newsapp.ui.theme.NewsAppTheme
 

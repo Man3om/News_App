@@ -20,6 +20,8 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -56,9 +58,8 @@ fun CategoriesScreen(modifier: Modifier = Modifier, navHostController: NavHostCo
 
 @Composable
 fun CategoryList(modifier: Modifier = Modifier, navHostController: NavHostController) {
-    val viewModel = viewModel<CategoriesViewModel>()
-
-    viewModel.getCategories().
+    val viewModel: CategoriesViewModel = viewModel()
+    val categories by viewModel.categories.collectAsState()
 
     LazyColumn {
         itemsIndexed(categories) { index, item ->

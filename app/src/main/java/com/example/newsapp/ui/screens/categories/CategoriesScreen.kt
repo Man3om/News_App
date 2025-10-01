@@ -31,10 +31,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.newsapp.R
 import com.example.newsapp.model.CategoryItemDM
 import com.example.newsapp.ui.destinations.NewsDestinations
+import kotlinx.serialization.builtins.serializer
 
 
 @Composable
@@ -53,7 +56,10 @@ fun CategoriesScreen(modifier: Modifier = Modifier, navHostController: NavHostCo
 
 @Composable
 fun CategoryList(modifier: Modifier = Modifier, navHostController: NavHostController) {
-    val categories = CategoryItemDM.getCategories()
+    val viewModel = viewModel<CategoriesViewModel>()
+
+    viewModel.getCategories().
+
     LazyColumn {
         itemsIndexed(categories) { index, item ->
             CategoryItem(category = item, index = index, onCategoryClick = { item ->

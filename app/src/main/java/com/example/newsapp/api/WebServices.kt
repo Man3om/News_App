@@ -15,8 +15,10 @@ interface WebServices {
     ): Call<SourcesResponse>
 
     @GET("v2/everything")
-    fun getNewsBySource(
+   suspend fun getNewsBySource(
         @Query("apiKey") apiKey: String = "06d492c0e0074c2ba430339bf1839078",
-        @Query("sources") sources: String? = null
-    ) : Call<EverythingResponse>
+        @Query("sources") sources: String? = null,
+        @Query("page") page: Int,
+        @Query("pageSize") pageSize: Int = 15
+    ) : EverythingResponse
 }

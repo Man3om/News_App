@@ -2,12 +2,16 @@ package com.example.newsapp.ui.screens.News
 
 import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
 import com.example.newsapp.api.ApiManager
 import com.example.newsapp.api.model.everythingResponseApiModel.ArticlesItem
 import com.example.newsapp.api.model.everythingResponseApiModel.EverythingResponse
 import com.example.newsapp.api.model.sourceResponseApiModel.SourcesItem
 import com.example.newsapp.api.model.sourceResponseApiModel.SourcesResponse
+import com.example.newsapp.paging.ArticlesPagingSource
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -15,7 +19,11 @@ import retrofit2.Response
 class NewsViewModel : ViewModel()  {
 
     val sourcesList = mutableStateListOf<SourcesItem>()
-    val articlesList = mutableStateListOf<ArticlesItem>()
+    val sourceId = mutableStateOf("")
+    val articlesList = Pager(config = PagingConfig(pageSize = 15), initialKey = 1, pagingSourceFactory = {
+        ArticlesPagingSource(sourceId.value)
+    }).flow
+
 
     fun getSources(categoryApiId: String) {
         val TAG = "Sources API"

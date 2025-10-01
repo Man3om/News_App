@@ -1,6 +1,5 @@
 package com.example.newsapp.ui.screens.News
 
-import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -23,44 +22,36 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.android.volley.toolbox.ImageRequest
+import androidx.paging.ItemSnapshotList
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
-import com.example.newsapp.api.ApiManager
 import com.example.newsapp.api.model.everythingResponseApiModel.ArticlesItem
-import com.example.newsapp.api.model.everythingResponseApiModel.EverythingResponse
 import com.example.newsapp.api.model.sourceResponseApiModel.SourcesItem
-import com.example.newsapp.api.model.sourceResponseApiModel.SourcesResponse
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 @Composable
 fun NewsScreen(category: String, modifier: Modifier = Modifier , viewModel: NewsViewModel = viewModel()) {
     Column(modifier.fillMaxSize()) {
-        NewsSourcesTopRow(category)
-        NewsLazyColumn(viewModel.articlesList)
+        NewsSourcesTopRow(category , viewModel = viewModel)
+        NewsLazyColumn(viewModel.articlesList.collectAsLazyPagingItems().itemSnapshotList)
     }
 }
 
 @Composable
-fun NewsLazyColumn(news: SnapshotStateList<ArticlesItem>, modifier: Modifier = Modifier) {
+fun NewsLazyColumn(news: ItemSnapshotList<ArticlesItem>, modifier: Modifier = Modifier) {
     LazyColumn(modifier = modifier) {
         itemsIndexed(news) { index, item ->
             NewsCard(article = item)
@@ -70,7 +61,7 @@ fun NewsLazyColumn(news: SnapshotStateList<ArticlesItem>, modifier: Modifier = M
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun NewsCard(modifier: Modifier = Modifier, article: ArticlesItem) {
+fun NewsCard(modifier: Modifier = Modifier, article: ArticlesItem?) {
     Card(
         modifier
             .fillMaxWidth()
@@ -81,7 +72,7 @@ fun NewsCard(modifier: Modifier = Modifier, article: ArticlesItem) {
     ) {
         // Image
         GlideImage(
-            model = article.urlToImage,
+            model = article?.urlToImage,
             contentDescription = "Translated description of what the image contains",
             modifier = Modifier
                 .padding(10.dp)
@@ -91,7 +82,7 @@ fun NewsCard(modifier: Modifier = Modifier, article: ArticlesItem) {
         )
         //Text
         Text(
-            text = article.description ?: "",
+            text = article?.description ?: "",
             modifier = Modifier.padding(8.dp),
             fontSize = 16.sp,
             fontWeight = FontWeight.W700,
@@ -106,7 +97,7 @@ fun NewsCard(modifier: Modifier = Modifier, article: ArticlesItem) {
         ) {
             // Author
             Text(
-                text = "By: ${article.author ?: ""}",
+                text = "By: ${article?.author ?: ""}",
                 modifier = Modifier
                     .padding(8.dp)
                     .weight(2f),
@@ -119,7 +110,7 @@ fun NewsCard(modifier: Modifier = Modifier, article: ArticlesItem) {
 
             // Time
             Text(
-                text = article.publishedAt ?: "",
+                text = article?.publishedAt ?: "",
                 modifier = Modifier
                     .padding(8.dp)
                     .weight(1.5f),
@@ -135,7 +126,7 @@ fun NewsCard(modifier: Modifier = Modifier, article: ArticlesItem) {
 fun NewsSourcesTopRow(
     categoryApiId: String,
     modifier: Modifier = Modifier,
-    viewModel: NewsViewModel = viewModel()
+    viewModel: NewsViewModel
 ) {
     var selectedIndex by remember {
         mutableIntStateOf(-1)

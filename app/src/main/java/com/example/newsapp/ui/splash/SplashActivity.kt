@@ -1,7 +1,6 @@
 package com.example.newsapp.ui.splash
 
 import android.content.Intent
-import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -48,7 +47,7 @@ class SplashActivity : ComponentActivity() {
     @Composable
     fun SplashContent(modifier: Modifier = Modifier) {
         Column(
-            modifier = Modifier.fillMaxSize(),
+            modifier = modifier.fillMaxSize(),
             verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -68,6 +67,6 @@ class SplashActivity : ComponentActivity() {
     @Composable
     @Preview(showSystemUi = true)
     fun SplashContentPreview(modifier: Modifier = Modifier) {
-        SplashContent()
+        SplashContent(modifier)
     }
 }

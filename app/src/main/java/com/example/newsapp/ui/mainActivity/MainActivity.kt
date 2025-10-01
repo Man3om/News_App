@@ -25,8 +25,6 @@ import com.example.newsapp.ui.screens.categories.CategoriesScreen
 import com.example.newsapp.ui.theme.NewsAppTheme
 
 class MainActivity : ComponentActivity() {
-    private val TAG = "MainActivity"
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()

@@ -55,6 +55,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     // Jetpack Compose integration
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.kotlinx.coroutines.android)
 
     implementation(libs.androidx.paging.runtime.ktx)
     // optional - Jetpack Compose integration

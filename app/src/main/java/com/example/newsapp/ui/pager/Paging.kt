@@ -1,27 +1,30 @@
-package com.example.newsapp.paging
+package com.example.newsapp.ui.pager
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.newsapp.api.ApiManager
 import com.example.newsapp.api.model.everythingResponseApiModel.ArticlesItem
 
-
-class ArticlesPagingSource(val sourceId: String) : PagingSource<Int, ArticlesItem>() {
+class PagingSource(val sourceId: String) :
+    PagingSource<Int, ArticlesItem>() {
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, ArticlesItem> {
-        val page = params.key ?: 1
         return try {
-            val response = ApiManager.webServices().getNewsBySource(sources = sourceId, page = page)
-            val articles = response.articles ?: listOf()
+            // Start refresh at page 1 if undefined.
+            val nextPageNumber = params.key ?: 1
+
+            val response = ApiManager.webServices().getNewsBySource(sourceId, nextPageNumber)
+            val articles = response.body()?.articles ?: listOf()
+
             LoadResult.Page(
-                articles,
-                if (page == 1) null else page - 1,
-                if (articles.isEmpty()) null else page + 1
+                data = articles,
+                prevKey = null, // Only paging forward.
+                nextKey = nextPageNumber + 1
             )
+
         } catch (e: Exception) {
-            return LoadResult.Error(e)
+            LoadResult.Error(Throwable(message = e.message))
         }
     }
-
 
     override fun getRefreshKey(state: PagingState<Int, ArticlesItem>): Int? {
         return state.anchorPosition?.let { anchorPosition ->
@@ -29,4 +32,5 @@ class ArticlesPagingSource(val sourceId: String) : PagingSource<Int, ArticlesIte
             anchorPage?.prevKey?.plus(1) ?: anchorPage?.nextKey?.minus(1)
         }
     }
+
 }

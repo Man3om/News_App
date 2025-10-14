@@ -1,5 +1,6 @@
 package com.example.newsapp.ui.screens.News
 
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -20,6 +21,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
@@ -29,31 +31,32 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.paging.ItemSnapshotList
-import androidx.paging.compose.collectAsLazyPagingItems
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.example.newsapp.api.model.everythingResponseApiModel.ArticlesItem
 import com.example.newsapp.api.model.sourceResponseApiModel.SourcesItem
 
 @Composable
-fun NewsScreen(category: String, modifier: Modifier = Modifier , viewModel: NewsViewModel = viewModel()) {
+fun NewsScreen(
+    category: String, modifier: Modifier = Modifier, viewModel: NewsViewModel = viewModel()
+) {
     Column(modifier.fillMaxSize()) {
-        NewsSourcesTopRow(category , viewModel = viewModel)
-        NewsLazyColumn(viewModel.articlesList.collectAsLazyPagingItems().itemSnapshotList)
+        NewsSourcesTopRow(category, viewModel = viewModel)
+        NewsLazyColumn(viewModel)
     }
 }
 
 @Composable
-fun NewsLazyColumn(news: ItemSnapshotList<ArticlesItem>, modifier: Modifier = Modifier) {
+fun NewsLazyColumn(newsViewModel: NewsViewModel, modifier: Modifier = Modifier) {
     LazyColumn(modifier = modifier) {
-        itemsIndexed(news) { index, item ->
+        itemsIndexed(newsViewModel.articlesList) { index, item ->
             NewsCard(article = item)
         }
     }
@@ -124,9 +127,7 @@ fun NewsCard(modifier: Modifier = Modifier, article: ArticlesItem?) {
 
 @Composable
 fun NewsSourcesTopRow(
-    categoryApiId: String,
-    modifier: Modifier = Modifier,
-    viewModel: NewsViewModel
+    categoryApiId: String, modifier: Modifier = Modifier, viewModel: NewsViewModel
 ) {
     var selectedIndex by remember {
         mutableIntStateOf(-1)
@@ -136,10 +137,18 @@ fun NewsSourcesTopRow(
         viewModel.getSources(categoryApiId)
     }
 
+
     LaunchedEffect(viewModel.sourcesList.isNotEmpty()) {
-        if(viewModel.sourcesList.isNotEmpty()){
-            viewModel.getNewsBySourceId(viewModel.sourcesList[0].id.toString())
+        if (viewModel.sourcesList.isNotEmpty()) {
+            viewModel.selectedSourceId.value = viewModel.sourcesList[0].id ?: ""
             selectedIndex = 0
+        }
+    }
+
+    val selectedId = viewModel.selectedSourceId.collectAsState().value
+    LaunchedEffect(selectedId) {
+        if (selectedId.isNotEmpty()) {
+            viewModel.getNewsBySourceId(selectedId)
         }
     }
 
@@ -149,9 +158,17 @@ fun NewsSourcesTopRow(
                 item = item, index = index, selectedIndex = selectedIndex
             ) { item ->
                 selectedIndex = index
-                viewModel.getNewsBySourceId(item.id.toString())
+                viewModel.selectedSourceId.value = item.id ?: ""
             }
         }
+    }
+
+    if (viewModel.sourceError.value.isNotEmpty()) {
+        Toast.makeText(LocalContext.current, viewModel.sourceError.value, Toast.LENGTH_SHORT).show()
+    }
+    if (viewModel.articlesError.value.isNotEmpty()) {
+        Toast.makeText(LocalContext.current, viewModel.articlesError.value, Toast.LENGTH_SHORT)
+            .show()
     }
 }
 

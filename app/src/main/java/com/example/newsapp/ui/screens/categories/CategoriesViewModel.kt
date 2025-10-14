@@ -9,10 +9,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 class CategoriesViewModel : ViewModel() {
-    var categories: StateFlow<List<CategoryItemDM>> = MutableStateFlow(listOf())
+
+    private var _categories: MutableStateFlow<List<CategoryItemDM>> = MutableStateFlow(listOf())
+    val  categories = _categories
 
     fun getCategories() {
-        categories = loadCategories()
+        _categories = loadCategories()
     }
 
     private fun loadCategories(): MutableStateFlow<List<CategoryItemDM>> {

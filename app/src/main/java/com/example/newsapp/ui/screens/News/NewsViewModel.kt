@@ -1,9 +1,9 @@
 package com.example.newsapp.ui.screens.News
 
-import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import com.example.newsapp.api.ApiManager
@@ -11,73 +11,68 @@ import com.example.newsapp.api.model.everythingResponseApiModel.ArticlesItem
 import com.example.newsapp.api.model.everythingResponseApiModel.EverythingResponse
 import com.example.newsapp.api.model.sourceResponseApiModel.SourcesItem
 import com.example.newsapp.api.model.sourceResponseApiModel.SourcesResponse
-import com.example.newsapp.paging.ArticlesPagingSource
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import com.example.newsapp.ui.pager.PagingSource
+import com.google.gson.Gson
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlin.collections.mutableListOf
 
-class NewsViewModel : ViewModel()  {
-
-    val sourcesList = mutableStateListOf<SourcesItem>()
-    val sourceId = mutableStateOf("")
-    val articlesList = Pager(config = PagingConfig(pageSize = 15), initialKey = 1, pagingSourceFactory = {
-        ArticlesPagingSource(sourceId.value)
-    }).flow
-
+class NewsViewModel : ViewModel() {
+    private var articlesList_ = mutableStateListOf<ArticlesItem>()
+    val articlesList = articlesList_
+    val sourceError = mutableStateOf("")
+    val articlesError = mutableStateOf("")
+    val selectedSourceId = MutableStateFlow("")
+    private var sourcesList_ = mutableStateListOf<SourcesItem>()
+    val sourcesList = sourcesList_
 
     fun getSources(categoryApiId: String) {
-        val TAG = "Sources API"
+        viewModelScope.launch {
+            try {
+                val response =
+                    ApiManager.webServices().getNewsSources(categoryApiId = categoryApiId)
 
-        ApiManager.webServices().getNewsSources(categoryApiId = categoryApiId)
-            .enqueue(object : Callback<SourcesResponse> {
-                override fun onResponse(
-                    call: Call<SourcesResponse?>, response: Response<SourcesResponse?>
-                ) {
-                    if (response.isSuccessful) {
-                        val responseBody = response.body()
-                        Log.i(TAG, "onResponse: ${responseBody?.status}")
-                        Log.i(TAG, "onResponse: ${responseBody?.sources}")
-                        sourcesList.clear()
-                        sourcesList.addAll(responseBody?.sources?: listOf())
-
-                    } else {
-                        val errorBody = response.errorBody()
-                        Log.e(TAG, "onResponse: $errorBody")
-                    }
+                if (response.isSuccessful) {
+                    sourcesList_.clear()
+                    sourcesList_.addAll(response.body()?.sources ?: listOf())
+                } else {
+                    val error = response.errorBody()?.string()
+                    val gson = Gson()
+                    val errorResponse = gson.fromJson(error, SourcesResponse::class.java)
+                    sourceError.value = errorResponse.message ?: "Something went wrong"
                 }
-
-                override fun onFailure(call: Call<SourcesResponse>, t: Throwable) {
-                    Log.e(TAG, "onFailure: ${t.message}")
-                }
-            })
+            } catch (e: Exception) {
+                sourceError.value = e.message.toString()
+                e.printStackTrace()
+            }
+        }
     }
 
     fun getNewsBySourceId(sourceId: String) {
-        ApiManager.webServices().getNewsBySource(sources = sourceId)
-            .enqueue(object : Callback<EverythingResponse> {
-                override fun onResponse(
-                    call: Call<EverythingResponse?>, response: Response<EverythingResponse?>
-                ) {
-                    if (response.isSuccessful) {
-                        val responseBody = response.body()
-                        Log.i("News API", "onResponse: ${responseBody?.status}")
-                        Log.i("News API", "onResponse: ${responseBody?.articles}")
-                        articlesList.clear()
-                        articlesList.addAll(responseBody?.articles?: listOf())
-                    } else {
-                        val errorBody = response.errorBody()
-                        Log.e("News API", "onResponse: $errorBody")
-                    }
+        selectedSourceId.value = sourceId
+        viewModelScope.launch {
+            try {
+                val response = ApiManager.webServices().getNewsBySource(sources = sourceId, 1, 15)
+
+                if (response.isSuccessful) {
+                    articlesList_.clear()
+                    articlesList_.addAll(response.body()?.articles ?: listOf())
+                } else {
+                    val gson = Gson()
+                    val errorResponse = gson.fromJson(
+                        response.errorBody()?.string(),
+                        EverythingResponse::class.java
+                    )
+                    articlesError.value = errorResponse.message ?: "Something went wrong"
                 }
-
-                override fun onFailure(
-                    call: Call<EverythingResponse?>, t: Throwable
-                ) {
-                    Log.e("News API", "onFailure: ${t.message}")
-                }
-
-            })
-
+            } catch (e: Exception) {
+                articlesError.value = e.message.toString()
+                e.printStackTrace()
+            }
+        }
     }
 
 }

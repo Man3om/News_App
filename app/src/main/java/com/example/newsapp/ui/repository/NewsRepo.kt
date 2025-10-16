@@ -10,14 +10,14 @@ import com.example.newsapp.ui.repository.dataSource.local.NewsLocalDataSource
 import com.example.newsapp.ui.repository.dataSource.remote.NewsRemoteDataSource
 import com.example.newsapp.ui.screens.News.Resources
 import com.example.newsapp.utils.Networking
+import com.example.newsapp.utils.NetworkingObj.isNetworkAvailable
 
 class NewsRepo {
     val newsLocalDataSource = NewsLocalDataSource()
     val newsRemoteDataSource = NewsRemoteDataSource()
 
     suspend fun getSources(category: String): Resources<List<SourcesItemDM>> {
-        val networkMonitor = Networking(NewsApplication.instance)
-        val isConnected = networkMonitor.isConnected.value
+        val isConnected = isNetworkAvailable()
 
         return if (isConnected) {
             val state = newsRemoteDataSource.getSources(category)
@@ -32,8 +32,7 @@ class NewsRepo {
     }
 
     suspend fun getNewsBySourceId(sourceId: String): Resources<List<ArticlesItem>> {
-        val networkMonitor = Networking(NewsApplication.instance)
-        val isConnected = networkMonitor.isConnected.value
+        val isConnected = isNetworkAvailable()
 
         return if (isConnected) {
             val state = newsRemoteDataSource.getNewsBySourceId(sourceId)

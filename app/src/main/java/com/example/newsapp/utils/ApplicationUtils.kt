@@ -2,7 +2,7 @@ package com.example.newsapp.utils
 
 import com.example.newsapp.ui.NewsApplication
 
-object NetworkingObj {
+object ApplicationUtils {
     fun isNetworkAvailable(): Boolean{
         val networkMonitor = Networking(
             NewsApplication.instance)

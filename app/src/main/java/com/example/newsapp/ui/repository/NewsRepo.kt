@@ -1,16 +1,12 @@
 package com.example.newsapp.ui.repository
 
-import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleCoroutineScope
+
 import com.example.newsapp.api.model.everythingResponseApiModel.ArticlesItem
 import com.example.newsapp.api.model.sourceResponseApiModel.SourcesItemDM
-import com.example.newsapp.ui.NewsApplication
 import com.example.newsapp.ui.repository.dataSource.local.NewsLocalDataSource
 import com.example.newsapp.ui.repository.dataSource.remote.NewsRemoteDataSource
 import com.example.newsapp.ui.screens.News.Resources
-import com.example.newsapp.utils.Networking
-import com.example.newsapp.utils.NetworkingObj.isNetworkAvailable
+import com.example.newsapp.utils.ApplicationUtils.isNetworkAvailable
 
 class NewsRepo {
     val newsLocalDataSource = NewsLocalDataSource()

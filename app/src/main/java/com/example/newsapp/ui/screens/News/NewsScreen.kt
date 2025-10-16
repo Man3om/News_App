@@ -43,7 +43,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.example.newsapp.api.model.everythingResponseApiModel.ArticlesItem
-import com.example.newsapp.api.model.sourceResponseApiModel.SourcesItem
+import com.example.newsapp.api.model.sourceResponseApiModel.SourcesItemDM
 
 @Composable
 fun NewsScreen(
@@ -167,7 +167,7 @@ fun NewsSourcesTopRow(
     LaunchedEffect(viewModel.sourcesResource.collectAsState().value) {
         if (viewModel.sourcesResource.value is Resources.Success) {
             val reposeSuccess =
-                (viewModel.sourcesResource.value as Resources.Success<List<SourcesItem>>).response
+                (viewModel.sourcesResource.value as Resources.Success<List<SourcesItemDM>>).response
             viewModel.selectedSourceId.value = reposeSuccess[0].id ?: ""
             selectedIndex = 0
         }
@@ -222,11 +222,11 @@ fun NewsSourcesTopRow(
 
 @Composable
 fun SourceItem(
-    item: SourcesItem,
+    item: SourcesItemDM,
     modifier: Modifier = Modifier,
     selectedIndex: Int,
     index: Int,
-    onClick: (SourcesItem) -> Unit
+    onClick: (SourcesItemDM) -> Unit
 ) {
     val selectedTextStyle = TextStyle(
         fontSize = 16.sp,

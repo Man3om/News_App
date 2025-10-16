@@ -2,11 +2,12 @@ package com.example.newsapp.api.model.everythingResponseApiModel
 
 import kotlinx.parcelize.Parcelize
 import android.os.Parcelable
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
 @Parcelize
 data class EverythingResponse(
-
 	@field:SerializedName("totalResults")
 	val totalResults: Int? = null,
 

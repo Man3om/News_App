@@ -2,10 +2,15 @@ package com.example.newsapp.api.model.everythingResponseApiModel
 
 import kotlinx.parcelize.Parcelize
 import android.os.Parcelable
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
 @Parcelize
+@Entity(tableName = "articles")
 data class ArticlesItem(
+	@PrimaryKey(autoGenerate = false)
+	var sourceId : String? = null,
 
 	@field:SerializedName("publishedAt")
 	val publishedAt: String? = null,

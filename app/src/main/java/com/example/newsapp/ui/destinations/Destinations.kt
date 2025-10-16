@@ -4,7 +4,7 @@ import com.example.newsapp.model.CategoryItemDM
 import kotlinx.serialization.Serializable
 
 @Serializable
-object CategoriesDestinations
+data object CategoriesDestinations
 
 @Serializable
 data class NewsDestinations(val categoryApiId: String)

@@ -1,6 +1,5 @@
 package com.example.newsapp.api.model.sourceResponseApiModel
 
-import android.os.Message
 import kotlinx.parcelize.Parcelize
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
@@ -9,7 +8,7 @@ import com.google.gson.annotations.SerializedName
 data class SourcesResponse(
 
 	@field:SerializedName("sources")
-	val sources: List<SourcesItem>? = null,
+	val sources: List<SourcesItemDM>? = null,
 
 	@field:SerializedName("message")
 	val message: String? = null,

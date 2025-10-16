@@ -24,7 +24,7 @@ data class SourcesItemDM(
 
 	@PrimaryKey(autoGenerate = false)
     @field:SerializedName("id")
-	var id: String? = null,
+	var id: String,
 
     @field:SerializedName("category")
 	val category: String? = null,

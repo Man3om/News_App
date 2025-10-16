@@ -10,7 +10,7 @@ import com.google.gson.annotations.SerializedName
 @Entity(tableName = "articles")
 data class ArticlesItem(
 	@PrimaryKey(autoGenerate = false)
-	var sourceId : String? = null,
+	var sourceId : String,
 
 	@field:SerializedName("publishedAt")
 	val publishedAt: String? = null,

@@ -5,11 +5,12 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.newsapp.api.database.dao.DBDao
+import com.example.newsapp.api.model.everythingResponseApiModel.ArticlesItem
 import com.example.newsapp.api.model.everythingResponseApiModel.EverythingResponse
 import com.example.newsapp.api.model.sourceResponseApiModel.SourcesItemDM
 
 @Database(
-    entities = [SourcesItemDM::class, EverythingResponse::class],
+    entities = [SourcesItemDM::class, ArticlesItem::class],
     version = 1,
     exportSchema = false
 )

@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.newsapp.api.model.everythingResponseApiModel.ArticlesItem
 import com.example.newsapp.api.model.sourceResponseApiModel.SourcesItemDM
 import com.example.newsapp.ui.repository.NewsRepo
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
@@ -17,7 +18,7 @@ class NewsViewModel : ViewModel() {
 
 
     fun getSources(categoryApiId: String) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             sourcesResource.value = Resources.Loading()
             sourcesResource.value = repository.getSources(categoryApiId)
         }
@@ -25,7 +26,7 @@ class NewsViewModel : ViewModel() {
 
     fun getNewsBySourceId(sourceId: String) {
         selectedSourceId.value = sourceId
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             articlesResource.value = Resources.Loading()
             articlesResource.value = repository.getNewsBySourceId(sourceId)
         }

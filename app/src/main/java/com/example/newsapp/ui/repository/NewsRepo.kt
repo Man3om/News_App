@@ -1,17 +1,23 @@
 package com.example.newsapp.ui.repository
 
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleCoroutineScope
 import com.example.newsapp.api.model.everythingResponseApiModel.ArticlesItem
 import com.example.newsapp.api.model.sourceResponseApiModel.SourcesItemDM
+import com.example.newsapp.ui.NewsApplication
 import com.example.newsapp.ui.repository.dataSource.local.NewsLocalDataSource
 import com.example.newsapp.ui.repository.dataSource.remote.NewsRemoteDataSource
 import com.example.newsapp.ui.screens.News.Resources
+import com.example.newsapp.utils.Networking
 
 class NewsRepo {
     val newsLocalDataSource = NewsLocalDataSource()
     val newsRemoteDataSource = NewsRemoteDataSource()
 
     suspend fun getSources(category: String): Resources<List<SourcesItemDM>> {
-        val isConnected = true
+        val networkMonitor = Networking(NewsApplication.instance)
+        val isConnected = networkMonitor.isConnected.value
 
         return if (isConnected) {
             val state = newsRemoteDataSource.getSources(category)
@@ -26,7 +32,8 @@ class NewsRepo {
     }
 
     suspend fun getNewsBySourceId(sourceId: String): Resources<List<ArticlesItem>> {
-        val isConnected = true
+        val networkMonitor = Networking(NewsApplication.instance)
+        val isConnected = networkMonitor.isConnected.value
 
         return if (isConnected) {
             val state = newsRemoteDataSource.getNewsBySourceId(sourceId)

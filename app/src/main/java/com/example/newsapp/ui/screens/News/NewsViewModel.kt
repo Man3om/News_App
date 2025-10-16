@@ -21,31 +21,29 @@ import kotlinx.coroutines.runBlocking
 import kotlin.collections.mutableListOf
 
 class NewsViewModel : ViewModel() {
-    private var articlesList_ = mutableStateListOf<ArticlesItem>()
-    val articlesList = articlesList_
-    val sourceError = mutableStateOf("")
-    val articlesError = mutableStateOf("")
-    val selectedSourceId = MutableStateFlow("")
-    private var sourcesList_ = mutableStateListOf<SourcesItem>()
-    val sourcesList = sourcesList_
+    val selectedSourceId = MutableStateFlow<String>("")
+    val sourcesResource = MutableStateFlow<Resources<List<SourcesItem>>>(Resources.Initial())
+    val articlesResource = MutableStateFlow<Resources<List<ArticlesItem>>>(Resources.Initial())
+
 
     fun getSources(categoryApiId: String) {
         viewModelScope.launch {
             try {
+                sourcesResource.value = Resources.Loading()
                 val response =
                     ApiManager.webServices().getNewsSources(categoryApiId = categoryApiId)
 
                 if (response.isSuccessful) {
-                    sourcesList_.clear()
-                    sourcesList_.addAll(response.body()?.sources ?: listOf())
+                    sourcesResource.value = Resources.Success(response.body()?.sources?: listOf())
                 } else {
+
                     val error = response.errorBody()?.string()
                     val gson = Gson()
                     val errorResponse = gson.fromJson(error, SourcesResponse::class.java)
-                    sourceError.value = errorResponse.message ?: "Something went wrong"
+                    sourcesResource.value = Resources.Error(errorResponse.message?:"Something went wrong")
                 }
             } catch (e: Exception) {
-                sourceError.value = e.message.toString()
+                sourcesResource.value = Resources.Error(e.message?:"Something went wrong")
                 e.printStackTrace()
             }
         }
@@ -55,21 +53,21 @@ class NewsViewModel : ViewModel() {
         selectedSourceId.value = sourceId
         viewModelScope.launch {
             try {
+                articlesResource.value = Resources.Loading()
                 val response = ApiManager.webServices().getNewsBySource(sources = sourceId, 1, 15)
 
                 if (response.isSuccessful) {
-                    articlesList_.clear()
-                    articlesList_.addAll(response.body()?.articles ?: listOf())
+                 articlesResource.value = Resources.Success(response.body()?.articles?: listOf())
                 } else {
                     val gson = Gson()
                     val errorResponse = gson.fromJson(
                         response.errorBody()?.string(),
                         EverythingResponse::class.java
                     )
-                    articlesError.value = errorResponse.message ?: "Something went wrong"
+                    articlesResource.value = Resources.Error(errorResponse.message?:"Something went wrong")
                 }
             } catch (e: Exception) {
-                articlesError.value = e.message.toString()
+                articlesResource.value = Resources.Error(e.message?:"Something went wrong")
                 e.printStackTrace()
             }
         }

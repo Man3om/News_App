@@ -4,6 +4,7 @@ import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -17,6 +18,7 @@ import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -55,9 +57,34 @@ fun NewsScreen(
 
 @Composable
 fun NewsLazyColumn(newsViewModel: NewsViewModel, modifier: Modifier = Modifier) {
-    LazyColumn(modifier = modifier) {
-        itemsIndexed(newsViewModel.articlesList) { index, item ->
-            NewsCard(article = item)
+    val articleState = newsViewModel.articlesResource.collectAsState().value
+
+    when (articleState) {
+        is Resources.Error -> {
+            if (articleState.message.isNotEmpty()) {
+                Toast.makeText(
+                    LocalContext.current,
+                    articleState.message,
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+
+        is Resources.Loading -> {
+            Box(modifier = Modifier.fillMaxSize() , contentAlignment = Alignment.Center) {
+            CircularProgressIndicator(color = MaterialTheme.colorScheme.onBackground)
+            }
+        }
+
+        is Resources.Success -> {
+            LazyColumn(modifier = modifier) {
+                itemsIndexed(articleState.response) { index, item ->
+                    NewsCard(article = item)
+                }
+            }
+        }
+
+        is Resources.Initial -> {
         }
     }
 }
@@ -137,11 +164,51 @@ fun NewsSourcesTopRow(
         viewModel.getSources(categoryApiId)
     }
 
-
-    LaunchedEffect(viewModel.sourcesList.isNotEmpty()) {
-        if (viewModel.sourcesList.isNotEmpty()) {
-            viewModel.selectedSourceId.value = viewModel.sourcesList[0].id ?: ""
+    LaunchedEffect(viewModel.sourcesResource.collectAsState().value) {
+        if (viewModel.sourcesResource.value is Resources.Success) {
+            val reposeSuccess =
+                (viewModel.sourcesResource.value as Resources.Success<List<SourcesItem>>).response
+            viewModel.selectedSourceId.value = reposeSuccess[0].id ?: ""
             selectedIndex = 0
+        }
+    }
+
+    val state = viewModel.sourcesResource.collectAsState().value
+
+    when (state) {
+        is Resources.Error -> {
+            if (state.message.isNotEmpty()) {
+                Toast.makeText(
+                    LocalContext.current,
+                    state.message,
+                    Toast.LENGTH_SHORT
+                )
+                    .show()
+            }
+        }
+
+        is Resources.Loading -> {
+            Box(modifier = Modifier.fillMaxSize() , contentAlignment = Alignment.Center) {
+                CircularProgressIndicator(color = MaterialTheme.colorScheme.onBackground)
+            }
+        }
+
+        is Resources.Success -> {
+            LazyRow(modifier) {
+                itemsIndexed(state.response) { index, item ->
+                    SourceItem(
+                        item = item, index = index, selectedIndex = selectedIndex
+                    ) { item ->
+                        selectedIndex = index
+                        viewModel.selectedSourceId.value = item.id ?: ""
+                    }
+                }
+            }
+
+        }
+
+        is Resources.Initial -> {
+
         }
     }
 
@@ -150,25 +217,6 @@ fun NewsSourcesTopRow(
         if (selectedId.isNotEmpty()) {
             viewModel.getNewsBySourceId(selectedId)
         }
-    }
-
-    LazyRow(modifier) {
-        itemsIndexed(viewModel.sourcesList) { index, item ->
-            SourceItem(
-                item = item, index = index, selectedIndex = selectedIndex
-            ) { item ->
-                selectedIndex = index
-                viewModel.selectedSourceId.value = item.id ?: ""
-            }
-        }
-    }
-
-    if (viewModel.sourceError.value.isNotEmpty()) {
-        Toast.makeText(LocalContext.current, viewModel.sourceError.value, Toast.LENGTH_SHORT).show()
-    }
-    if (viewModel.articlesError.value.isNotEmpty()) {
-        Toast.makeText(LocalContext.current, viewModel.articlesError.value, Toast.LENGTH_SHORT)
-            .show()
     }
 }
 

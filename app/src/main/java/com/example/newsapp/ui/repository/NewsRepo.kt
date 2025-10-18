@@ -1,6 +1,7 @@
 package com.example.newsapp.ui.repository
 
 
+import android.util.Log
 import com.example.newsapp.api.model.everythingResponseApiModel.ArticlesItem
 import com.example.newsapp.api.model.sourceResponseApiModel.SourcesItemDM
 import com.example.newsapp.ui.repository.dataSource.local.NewsLocalDataSource
@@ -33,6 +34,7 @@ class NewsRepo {
         return if (isConnected) {
             val state = newsRemoteDataSource.getNewsBySourceId(sourceId)
             if (state is Resources.Success) {
+                Log.d("GetNewsBySourceId", "getNewsBySourceId: ${state.response}")
                 newsLocalDataSource.insertSavedArticles(state.response, sourceId)
             }
 

@@ -1,5 +1,6 @@
 package com.example.newsapp.ui.repository.dataSource.local
 
+import android.util.Log
 import com.example.newsapp.api.database.init.AppDatabase
 import com.example.newsapp.api.model.everythingResponseApiModel.ArticlesItem
 import com.example.newsapp.api.model.everythingResponseApiModel.EverythingResponse
@@ -47,6 +48,7 @@ class NewsLocalDataSource {
             data.forEach {
                 it.sourceId = sourceId
             }
+            Log.d("insertSavedArticles", "insertSavedArticles: $data")
             AppDatabase.getInstance().appDao().insertArticles(data)
             return Resources.Success(Unit)
         }

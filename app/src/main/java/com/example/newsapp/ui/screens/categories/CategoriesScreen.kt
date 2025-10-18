@@ -57,11 +57,13 @@ fun CategoriesScreen(modifier: Modifier = Modifier, navHostController: NavHostCo
 @Composable
 fun CategoryList(modifier: Modifier = Modifier, navHostController: NavHostController) {
     val viewModel: CategoriesViewModel = viewModel()
-    val categories = viewModel.getCategories()
-    Log.d("CategoryList", "CategoryList: ${categories.value}")
+    val categories by viewModel.categories.collectAsState()
+    viewModel.getCategories()
+
+    Log.d("CategoryList", "CategoryList: $categories")
 
     LazyColumn {
-        itemsIndexed(categories.value) { index, item ->
+        itemsIndexed(categories) { index, item ->
             CategoryItem(category = item, index = index, onCategoryClick = { item ->
                 Log.i("TAG", "CategorySelected: ${item.apiID}")
                 navHostController.navigate(NewsDestinations(item.apiID ?: ""))

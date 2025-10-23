@@ -44,6 +44,7 @@ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.example.newsapp.api.model.everythingResponseApiModel.ArticlesItem
 import com.example.newsapp.api.model.sourceResponseApiModel.SourcesItemDM
+import com.example.newsapp.ui.screens.Resources
 
 @Composable
 fun NewsScreen(

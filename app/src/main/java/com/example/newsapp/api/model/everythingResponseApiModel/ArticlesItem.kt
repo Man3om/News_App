@@ -14,7 +14,7 @@ data class ArticlesItem(
 	var id : Int ,
 
 	@ColumnInfo(name = "sourceId")
-	val sourceId : String,
+    var sourceId : String,
 
 	@field:SerializedName("publishedAt")
 	val publishedAt: String? = null,

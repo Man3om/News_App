@@ -20,8 +20,10 @@ import com.example.newsapp.R
 import com.example.newsapp.ui.components.NewsToolbar
 import com.example.newsapp.ui.destinations.CategoriesDestinations
 import com.example.newsapp.ui.destinations.NewsDestinations
+import com.example.newsapp.ui.destinations.SearchDestination
 import com.example.newsapp.ui.screens.News.NewsScreen
 import com.example.newsapp.ui.screens.categories.CategoriesScreen
+import com.example.newsapp.ui.screens.searchScreen.SearchScreen
 import com.example.newsapp.ui.theme.NewsAppTheme
 
 class MainActivity : ComponentActivity() {
@@ -46,7 +48,9 @@ class MainActivity : ComponentActivity() {
                         NewsToolbar(
                             title = title.value,
                             onMenuButtonClicked = {},
-                            onSearchButtonClicked = {})
+                            onSearchButtonClicked = {
+                                navController.navigate(SearchDestination)
+                            })
                     }) { innerPadding ->
                     NavHost(
                         modifier = Modifier.Companion.padding(top = innerPadding.calculateTopPadding()),
@@ -62,6 +66,11 @@ class MainActivity : ComponentActivity() {
                             val destination = it.toRoute<NewsDestinations>()
                             title.value = destination.categoryApiId
                             NewsScreen(category = destination.categoryApiId)
+                        }
+
+                        composable<SearchDestination> {
+                            title.value = "Search"
+                            SearchScreen()
                         }
                     }
                 }

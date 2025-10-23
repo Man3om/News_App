@@ -5,7 +5,7 @@ import com.example.newsapp.api.database.init.AppDatabase
 import com.example.newsapp.api.model.everythingResponseApiModel.ArticlesItem
 import com.example.newsapp.api.model.everythingResponseApiModel.EverythingResponse
 import com.example.newsapp.api.model.sourceResponseApiModel.SourcesItemDM
-import com.example.newsapp.ui.screens.News.Resources
+import com.example.newsapp.ui.screens.Resources
 
 class NewsLocalDataSource {
     suspend fun getSavedSources(category: String): Resources<List<SourcesItemDM>> {

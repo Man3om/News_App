@@ -1,4 +1,4 @@
-package com.example.newsapp.ui.screens.News
+package com.example.newsapp.ui.screens
 
 sealed interface Resources<T> {
     class Initial<T> : Resources<T>
@@ -6,4 +6,3 @@ sealed interface Resources<T> {
     data class Success<E>(val response: E) : Resources<E>
     data class Error<T>(val message: String) : Resources<T>
 }
-

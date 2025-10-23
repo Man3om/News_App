@@ -6,13 +6,18 @@ import com.example.newsapp.api.model.everythingResponseApiModel.ArticlesItem
 import com.example.newsapp.api.model.sourceResponseApiModel.SourcesItemDM
 import com.example.newsapp.ui.repository.dataSource.local.NewsLocalDataSource
 import com.example.newsapp.ui.repository.dataSource.remote.NewsRemoteDataSource
-import com.example.newsapp.ui.screens.News.Resources
+import com.example.newsapp.ui.screens.Resources
 import com.example.newsapp.utils.ApplicationUtils.isNetworkAvailable
 
 class NewsRepo {
+    private val TAG = "NewsRepo"
     val newsLocalDataSource = NewsLocalDataSource()
     val newsRemoteDataSource = NewsRemoteDataSource()
 
+    suspend fun searchArticles(query: String): Resources<List<ArticlesItem>> {
+            val state = newsRemoteDataSource.searchArticles(query)
+            return state
+    }
     suspend fun getSources(category: String): Resources<List<SourcesItemDM>> {
         val isConnected = isNetworkAvailable()
 

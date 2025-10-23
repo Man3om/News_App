@@ -20,4 +20,9 @@ interface WebServices {
         @Query("page") page: Int? = null,
         @Query("pageSize") pageSize: Int? = 15
     ) : Response<EverythingResponse>
+
+   @GET("v2/everything")
+    suspend fun getNewsSearch(
+        @Query("q") search: String? = null,
+    ) : Response<EverythingResponse>
 }

@@ -10,7 +10,9 @@ class CategoriesViewModel : ViewModel() {
     private var _categories: MutableStateFlow<List<CategoryItemDM>> = MutableStateFlow(listOf())
     val categories = _categories
     fun getCategories() {
-        _categories = loadCategories()
+        _categories.value = loadCategories().value
+        Log.d(TAG, "getCategories: ${_categories.value}")
+        Log.d(TAG, "getCategoriesPublicVar.: ${categories.value}")
     }
 
     private fun loadCategories(): MutableStateFlow<List<CategoryItemDM>> {

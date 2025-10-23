@@ -3,7 +3,10 @@ package com.example.newsapp.ui.screens.searchScreen
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.text.input.TextFieldState
@@ -27,14 +30,15 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.newsapp.ui.screens.Resources
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import com.example.newsapp.ui.screens.News.NewsCard
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchScreen(
+fun SearchBarComponent(
     modifier: Modifier = Modifier,
-    viewModel: SearchViewModel = viewModel(),
+    viewModel: SearchViewModel,
     textFieldState: TextFieldState = TextFieldState(),
 ) {
     // Controls expansion state of the search bar
@@ -42,7 +46,6 @@ fun SearchScreen(
 
     Box(
         modifier
-            .fillMaxSize()
             .semantics { isTraversalGroup = true }) {
 
         SearchBar(
@@ -55,6 +58,7 @@ fun SearchScreen(
                     onQueryChange = { textFieldState.edit { replace(0, length, it) } },
                     onSearch = {
                         viewModel.searchArticles(textFieldState.text.toString())
+                        expanded = false
                     },
                     expanded = expanded,
                     onExpandedChange = { expanded = it },
@@ -66,36 +70,52 @@ fun SearchScreen(
             colors = SearchBarDefaults.colors(
                 containerColor = MaterialTheme.colorScheme.background,
             )
-        ) {
-            val articlesState = viewModel.searchResults.collectAsState().value
-            Log.d("SearchScreen", "State: $articlesState")
+        ) {}
+    }
+}
 
-            when (articlesState) {
-                is Resources.Error -> {
-                    if (articlesState.message.isNotEmpty()) {
-                        Toast.makeText(
-                            LocalContext.current,
-                            articlesState.message,
-                            Toast.LENGTH_LONG
-                        ).show()
-                    }
-                }
+@Composable
+fun SearchScreen(modifier: Modifier = Modifier, viewModel: SearchViewModel = viewModel()) {
+    Column(modifier = modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally) {
+        SearchBarComponent(modifier = modifier, viewModel = viewModel)
+        Spacer(modifier = Modifier.height(16.dp))
+        HandleArticlesList(viewModel, modifier)
+    }
+}
 
-                is Resources.Initial -> {}
-                is Resources.Loading -> {
-                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        Log.d("SearchScreen", "Loading")
-                        CircularProgressIndicator(color = MaterialTheme.colorScheme.onBackground)
-                    }
-                }
+@Composable
+private fun HandleArticlesList(
+    viewModel: SearchViewModel,
+    modifier: Modifier
+) {
+    val articlesState = viewModel.searchResults.collectAsState().value
+    Log.d("SearchScreen", "State: $articlesState")
 
-                is Resources.Success -> {
-                    Log.d("SearchScreen", "Success: ${articlesState.response}")
-                    LazyColumn(modifier = modifier) {
-                        itemsIndexed(articlesState.response) { index, item ->
-                            NewsCard(article = item)
-                        }
-                    }
+    when (articlesState) {
+        is Resources.Error -> {
+            if (articlesState.message.isNotEmpty()) {
+                Toast.makeText(
+                    LocalContext.current,
+                    articlesState.message,
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        }
+
+        is Resources.Initial -> {}
+        is Resources.Loading -> {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Log.d("SearchScreen", "Loading")
+                CircularProgressIndicator(color = MaterialTheme.colorScheme.onBackground)
+            }
+        }
+
+        is Resources.Success -> {
+            Log.d("SearchScreen", "Success: ${articlesState.response}")
+            LazyColumn(modifier = modifier) {
+                itemsIndexed(articlesState.response) { index, item ->
+                    NewsCard(article = item)
                 }
             }
         }

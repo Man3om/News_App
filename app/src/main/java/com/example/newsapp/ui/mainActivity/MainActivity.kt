@@ -14,13 +14,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.dialog
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.example.newsapp.R
 import com.example.newsapp.ui.components.NewsToolbar
+import com.example.newsapp.ui.destinations.ArticleDestinations
 import com.example.newsapp.ui.destinations.CategoriesDestinations
 import com.example.newsapp.ui.destinations.NewsDestinations
 import com.example.newsapp.ui.destinations.SearchDestination
+import com.example.newsapp.ui.dialogs.articleDialog.ArticleBottomSheet
 import com.example.newsapp.ui.screens.News.NewsScreen
 import com.example.newsapp.ui.screens.categories.CategoriesScreen
 import com.example.newsapp.ui.screens.searchScreen.SearchScreen
@@ -65,12 +68,23 @@ class MainActivity : ComponentActivity() {
                         composable<NewsDestinations> {
                             val destination = it.toRoute<NewsDestinations>()
                             title.value = destination.categoryApiId
-                            NewsScreen(category = destination.categoryApiId)
+                            NewsScreen(category = destination.categoryApiId , navController = navController)
                         }
 
                         composable<SearchDestination> {
                             title.value = "Search"
-                            SearchScreen()
+                            SearchScreen(navController = navController)
+                        }
+
+                        dialog<ArticleDestinations> {
+                            val destination = it.toRoute<ArticleDestinations>()
+                            ArticleBottomSheet(
+                                url = destination.url,
+                                description = destination.description,
+                                onDismiss = {
+                                    navController.popBackStack()
+                                }
+                            )
                         }
                     }
                 }

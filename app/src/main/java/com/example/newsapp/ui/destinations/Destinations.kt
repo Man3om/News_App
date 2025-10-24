@@ -10,3 +10,6 @@ data class NewsDestinations(val categoryApiId: String)
 
 @Serializable
 data object SearchDestination
+
+@Serializable
+data class ArticleDestinations(val description : String, val url : String)

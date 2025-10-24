@@ -31,6 +31,8 @@ import com.example.newsapp.ui.screens.Resources
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import com.example.newsapp.ui.destinations.ArticleDestinations
 import com.example.newsapp.ui.screens.News.NewsCard
 
 
@@ -75,19 +77,22 @@ fun SearchBarComponent(
 }
 
 @Composable
-fun SearchScreen(modifier: Modifier = Modifier, viewModel: SearchViewModel = viewModel()) {
+fun SearchScreen(modifier: Modifier = Modifier, viewModel: SearchViewModel = viewModel() ,
+                 navController: NavHostController
+) {
     Column(modifier = modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally) {
         SearchBarComponent(modifier = modifier, viewModel = viewModel)
         Spacer(modifier = Modifier.height(16.dp))
-        HandleArticlesList(viewModel, modifier)
+        HandleArticlesList(viewModel, modifier, navController)
     }
 }
 
 @Composable
 private fun HandleArticlesList(
     viewModel: SearchViewModel,
-    modifier: Modifier
+    modifier: Modifier,
+    navController: NavHostController
 ) {
     val articlesState = viewModel.searchResults.collectAsState().value
     Log.d("SearchScreen", "State: $articlesState")
@@ -115,7 +120,10 @@ private fun HandleArticlesList(
             Log.d("SearchScreen", "Success: ${articlesState.response}")
             LazyColumn(modifier = modifier) {
                 itemsIndexed(articlesState.response) { index, item ->
-                    NewsCard(article = item)
+                    NewsCard(article = item){url, description ->
+                        // Navigate to ArticleScreen
+                        navController.navigate(ArticleDestinations(description, url))
+                    }
                 }
             }
         }

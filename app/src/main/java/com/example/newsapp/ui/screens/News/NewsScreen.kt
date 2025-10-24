@@ -1,5 +1,6 @@
 package com.example.newsapp.ui.screens.News
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
@@ -40,24 +41,32 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.example.newsapp.api.model.everythingResponseApiModel.ArticlesItem
 import com.example.newsapp.api.model.sourceResponseApiModel.SourcesItemDM
+import com.example.newsapp.ui.destinations.ArticleDestinations
 import com.example.newsapp.ui.screens.Resources
 
 @Composable
 fun NewsScreen(
-    category: String, modifier: Modifier = Modifier, viewModel: NewsViewModel = viewModel()
+    category: String,
+    modifier: Modifier = Modifier,
+    viewModel: NewsViewModel = viewModel(),
+    navController: NavHostController
 ) {
     Column(modifier.fillMaxSize()) {
         NewsSourcesTopRow(category, viewModel = viewModel)
-        NewsLazyColumn(viewModel)
+        NewsLazyColumn(viewModel, navController = navController)
     }
 }
 
 @Composable
-fun NewsLazyColumn(newsViewModel: NewsViewModel, modifier: Modifier = Modifier) {
+fun NewsLazyColumn(
+    newsViewModel: NewsViewModel, modifier: Modifier = Modifier,
+    navController: NavHostController
+) {
     val articleState = newsViewModel.articlesResource.collectAsState().value
 
     when (articleState) {
@@ -72,15 +81,20 @@ fun NewsLazyColumn(newsViewModel: NewsViewModel, modifier: Modifier = Modifier) 
         }
 
         is Resources.Loading -> {
-            Box(modifier = Modifier.fillMaxSize() , contentAlignment = Alignment.Center) {
-            CircularProgressIndicator(color = MaterialTheme.colorScheme.onBackground)
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator(color = MaterialTheme.colorScheme.onBackground)
             }
         }
 
         is Resources.Success -> {
             LazyColumn(modifier = modifier) {
                 itemsIndexed(articleState.response) { index, item ->
-                    NewsCard(article = item)
+                    NewsCard(article = item){
+                        url, description ->
+                        Log.d("NewsScreen", "NewsCardUrl: $url")
+                        Log.d("NewsScreen", "NewsCardDescription: $description")
+                        navController.navigate(ArticleDestinations(description, url))
+                    }
                 }
             }
         }
@@ -92,14 +106,21 @@ fun NewsLazyColumn(newsViewModel: NewsViewModel, modifier: Modifier = Modifier) 
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun NewsCard(modifier: Modifier = Modifier, article: ArticlesItem?) {
+fun NewsCard(
+    modifier: Modifier = Modifier,
+    article: ArticlesItem?,
+    onNewsCardClick: (String, String) -> Unit
+) {
     Card(
         modifier
             .fillMaxWidth()
-            .padding(horizontal = 12.dp, vertical = 10.dp),
+            .padding(horizontal = 12.dp, vertical = 10.dp)
+            .clickable {
+                  onNewsCardClick(article?.urlToImage ?: "", article?.description ?: "")
+            },
         shape = RoundedCornerShape(corner = CornerSize(16.dp)),
         colors = CardDefaults.cardColors(MaterialTheme.colorScheme.background),
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.onBackground)
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.onBackground),
     ) {
         // Image
         GlideImage(
@@ -189,7 +210,7 @@ fun NewsSourcesTopRow(
         }
 
         is Resources.Loading -> {
-            Box(modifier = Modifier.fillMaxSize() , contentAlignment = Alignment.Center) {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 CircularProgressIndicator(color = MaterialTheme.colorScheme.onBackground)
             }
         }

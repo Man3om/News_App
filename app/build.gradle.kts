@@ -47,6 +47,8 @@ android {
 
 dependencies {
     implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.compose.foundation.layout)
+    implementation(libs.androidx.browser)
 
     ksp(libs.androidx.room.compiler)
 

@@ -1,7 +1,5 @@
 package com.example.newsapp.ui.dialogs.articleDialog
 
-import android.net.Uri
-import androidx.activity.compose.LocalActivity
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -33,7 +31,8 @@ import androidx.core.net.toUri
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalGlideComposeApi::class)
 @Composable
 fun ArticleBottomSheet(
-    url: String,
+    articleUrl: String,
+    imageUrl: String,
     description: String,
     onDismiss: () -> Unit
 ) {
@@ -58,7 +57,7 @@ fun ArticleBottomSheet(
         ) {
             //  Image
             GlideImage(
-                model = url,
+                model = imageUrl,
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -86,7 +85,7 @@ fun ArticleBottomSheet(
             TextButton(
                 onClick = {
                     val customTabsIntent = CustomTabsIntent.Builder().build()
-                    customTabsIntent.launchUrl(context, url.toUri())
+                    customTabsIntent.launchUrl(context, articleUrl.toUri())
                     onDismiss()
                 },
                 modifier = Modifier

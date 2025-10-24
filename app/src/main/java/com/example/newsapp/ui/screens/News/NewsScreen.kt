@@ -89,11 +89,10 @@ fun NewsLazyColumn(
         is Resources.Success -> {
             LazyColumn(modifier = modifier) {
                 itemsIndexed(articleState.response) { index, item ->
-                    NewsCard(article = item){
-                        url, description ->
-                        Log.d("NewsScreen", "NewsCardUrl: $url")
+                    NewsCard(article = item) { imageUrl, description ,articleUrl->
+                        Log.d("NewsScreen", "NewsCardUrl: $imageUrl")
                         Log.d("NewsScreen", "NewsCardDescription: $description")
-                        navController.navigate(ArticleDestinations(description, url))
+                        navController.navigate(ArticleDestinations(description, imageUrl,articleUrl))
                     }
                 }
             }
@@ -109,14 +108,18 @@ fun NewsLazyColumn(
 fun NewsCard(
     modifier: Modifier = Modifier,
     article: ArticlesItem?,
-    onNewsCardClick: (String, String) -> Unit
+    onNewsCardClick: (String, String, String) -> Unit
 ) {
     Card(
         modifier
             .fillMaxWidth()
             .padding(horizontal = 12.dp, vertical = 10.dp)
             .clickable {
-                  onNewsCardClick(article?.urlToImage ?: "", article?.description ?: "")
+                onNewsCardClick(
+                    article?.urlToImage ?: "",
+                    article?.description ?: "",
+                    article?.url ?: ""
+                )
             },
         shape = RoundedCornerShape(corner = CornerSize(16.dp)),
         colors = CardDefaults.cardColors(MaterialTheme.colorScheme.background),

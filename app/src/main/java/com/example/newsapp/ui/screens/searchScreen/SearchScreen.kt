@@ -120,9 +120,9 @@ private fun HandleArticlesList(
             Log.d("SearchScreen", "Success: ${articlesState.response}")
             LazyColumn(modifier = modifier) {
                 itemsIndexed(articlesState.response) { index, item ->
-                    NewsCard(article = item){url, description ->
+                    NewsCard(article = item){imageUrl, description ,articleUrl->
                         // Navigate to ArticleScreen
-                        navController.navigate(ArticleDestinations(description, url))
+                        navController.navigate(ArticleDestinations(description, imageUrl,articleUrl))
                     }
                 }
             }

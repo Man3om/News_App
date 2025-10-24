@@ -79,7 +79,8 @@ class MainActivity : ComponentActivity() {
                         dialog<ArticleDestinations> {
                             val destination = it.toRoute<ArticleDestinations>()
                             ArticleBottomSheet(
-                                url = destination.url,
+                                articleUrl = destination.articleUrl,
+                                imageUrl = destination.imageUrl,
                                 description = destination.description,
                                 onDismiss = {
                                     navController.popBackStack()

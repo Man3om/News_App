@@ -181,10 +181,6 @@ fun NewsCard(
 fun NewsSourcesTopRow(
     categoryApiId: String, modifier: Modifier = Modifier, viewModel: NewsViewModel
 ) {
-    var selectedIndex by remember {
-        mutableIntStateOf(-1)
-    }
-
     LaunchedEffect(Unit) {
         viewModel.getSources(categoryApiId)
     }
@@ -193,8 +189,8 @@ fun NewsSourcesTopRow(
         if (viewModel.sourcesResource.value is Resources.Success) {
             val reposeSuccess =
                 (viewModel.sourcesResource.value as Resources.Success<List<SourcesItemDM>>).response
-            viewModel.selectedSourceId.value = reposeSuccess[0].id ?: ""
-            selectedIndex = 0
+            viewModel.selectedSourceId.value = reposeSuccess[0].id
+            viewModel.selectedItemIndex.value = 0
         }
     }
 
@@ -222,10 +218,10 @@ fun NewsSourcesTopRow(
             LazyRow(modifier) {
                 itemsIndexed(state.response) { index, item ->
                     SourceItem(
-                        item = item, index = index, selectedIndex = selectedIndex
+                        item = item, index = index, selectedIndex = viewModel.selectedItemIndex.collectAsState().value
                     ) { item ->
-                        selectedIndex = index
-                        viewModel.selectedSourceId.value = item.id ?: ""
+                        viewModel.selectedItemIndex.value = index
+                        viewModel.selectedSourceId.value = item.id
                     }
                 }
             }

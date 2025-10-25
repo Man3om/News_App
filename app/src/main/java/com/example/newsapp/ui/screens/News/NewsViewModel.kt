@@ -12,6 +12,7 @@ import kotlinx.coroutines.launch
 
 class NewsViewModel : ViewModel() {
     val selectedSourceId = MutableStateFlow<String>("")
+    val selectedItemIndex = MutableStateFlow<Int>(-1)
     val sourcesResource = MutableStateFlow<Resources<List<SourcesItemDM>>>(Resources.Initial())
     val articlesResource = MutableStateFlow<Resources<List<ArticlesItem>>>(Resources.Initial())
 

@@ -20,6 +20,7 @@ import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
@@ -67,7 +68,7 @@ class MainActivity : ComponentActivity() {
                 val isSearching = remember {
                     mutableStateOf(false)
                 }
-                var query = remember {
+                val query = remember {
                     mutableStateOf("")
                 }
                 val navController = rememberNavController()
@@ -96,7 +97,6 @@ class MainActivity : ComponentActivity() {
                                     isSearching.value = false
                                 },
                                 onSearchButtonClicked = {
-                                    // navController.navigate(SearchDestination)
                                     isSearching.value = true
                                 },
                                 isSearching = isSearching.value,
@@ -124,7 +124,10 @@ fun SearchScreen(modifier: Modifier = Modifier,query: String, innerPadding: Padd
         val articlesState = viewModel.searchResults.collectAsState().value
         Log.d("SearchScreen", "State: $articlesState")
 
-        viewModel.getNewsFromSearch(query)
+        LaunchedEffect(key1 = query) {
+            if (query.isNotEmpty())
+                viewModel.searchArticles(query)
+        }
 
         when (articlesState) {
             is Resources.Error -> {

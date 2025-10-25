@@ -49,6 +49,7 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.compose.foundation.layout)
     implementation(libs.androidx.browser)
+    implementation (libs.androidx.compose.material.icons.extended)
 
     ksp(libs.androidx.room.compiler)
 

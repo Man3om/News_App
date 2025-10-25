@@ -51,7 +51,9 @@ class MainActivity : ComponentActivity() {
                 }
                 val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
                 val scope = rememberCoroutineScope()
-
+                val isSearching = remember {
+                    mutableStateOf(false)
+                }
                 val navController = rememberNavController()
 
                 ModalNavigationDrawer(
@@ -61,7 +63,7 @@ class MainActivity : ComponentActivity() {
                             scope.launch { drawerState.close() }
                         }
                     },
-                    gesturesEnabled = false
+                    gesturesEnabled = true
                 ) {
                     Scaffold(
                         modifier = Modifier.Companion
@@ -74,9 +76,15 @@ class MainActivity : ComponentActivity() {
                                 onMenuButtonClicked = {
                                     scope.launch { drawerState.open() }
                                 },
+                                onSearchClose = {
+                                    isSearching.value = false
+                                },
                                 onSearchButtonClicked = {
-                                    navController.navigate(SearchDestination)
-                                })
+                                    // navController.navigate(SearchDestination)
+                                    isSearching.value = true
+                                },
+                                isSearching = isSearching.value
+                            )
                         }
                     ) { innerPadding ->
                         HomeScreen(innerPadding, navController, title, homeText)

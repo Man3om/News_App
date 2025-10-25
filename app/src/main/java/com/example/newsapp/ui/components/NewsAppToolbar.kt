@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.input.TextFieldLineLimits
+import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -42,17 +43,19 @@ fun NewsToolbar(
     onMenuButtonClicked: () -> Unit,
     onSearchButtonClicked: () -> Unit,
     onSearchClose: () -> Unit,
+    onSearchIconClickedForSearching: (String) -> Unit,
     isSearching: Boolean
 ) {
     when (isSearching) {
         true -> {
+            val textState = rememberTextFieldState()
             TopSearchBar(
                 state = rememberSearchBarState(),
                 modifier = Modifier.fillMaxWidth(),
                 colors = SearchBarDefaults.colors(Color.Transparent),
                 inputField = {
                     OutlinedTextField(
-                        state = rememberTextFieldState(),
+                        state = textState,
                         lineLimits = TextFieldLineLimits.SingleLine,
                         modifier = modifier
                             .fillMaxWidth()
@@ -64,7 +67,7 @@ fun NewsToolbar(
                                 contentDescription = null,
                                 tint = MaterialTheme.colorScheme.onBackground,
                                 modifier = Modifier.clickable {
-
+                                    onSearchIconClickedForSearching(textState.text.toString().trim())
                                 }
                             )
                         },

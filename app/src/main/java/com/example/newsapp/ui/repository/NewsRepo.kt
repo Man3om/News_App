@@ -6,7 +6,7 @@ import com.example.newsapp.api.model.everythingResponseApiModel.ArticlesItem
 import com.example.newsapp.api.model.sourceResponseApiModel.SourcesItemDM
 import com.example.newsapp.ui.repository.dataSource.local.NewsLocalDataSource
 import com.example.newsapp.ui.repository.dataSource.remote.NewsRemoteDataSource
-import com.example.newsapp.ui.screens.Resources
+import com.example.domain.utils.base.Resources
 import com.example.newsapp.utils.ApplicationUtils.isNetworkAvailable
 
 class NewsRepo {

@@ -48,7 +48,7 @@ import com.example.newsapp.ui.destinations.SearchDestination
 import com.example.newsapp.ui.dialogs.articleDialog.ArticleBottomSheet
 import com.example.newsapp.ui.screens.News.NewsCard
 import com.example.newsapp.ui.screens.News.NewsScreen
-import com.example.newsapp.ui.screens.Resources
+import com.example.domain.utils.base.Resources
 import com.example.newsapp.ui.screens.categories.CategoriesScreen
 import com.example.newsapp.ui.theme.NewsAppTheme
 import kotlinx.coroutines.launch

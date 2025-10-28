@@ -4,10 +4,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-    id("kotlin-parcelize")
     // Kotlin serialization plugin for type safe routes and navigation arguments
-    kotlin("plugin.serialization") version "2.0.21"
-    id("com.google.devtools.ksp")
 }
 
 android {
@@ -46,12 +43,11 @@ android {
 }
 
 dependencies {
-    implementation(libs.androidx.room.runtime)
+
     implementation(libs.androidx.compose.foundation.layout)
     implementation(libs.androidx.browser)
     implementation (libs.androidx.compose.material.icons.extended)
-
-    ksp(libs.androidx.room.compiler)
+    implementation(project(":domain"))
 
     // optional - Kotlin Extensions and Coroutines support for Room
     implementation(libs.androidx.room.ktx)
@@ -70,9 +66,7 @@ dependencies {
     // optional - Jetpack Compose integration
     implementation(libs.androidx.paging.compose)
     implementation(libs.compose)
-    implementation(libs.retrofit)
-    implementation(libs.converter.gson)
-    implementation(libs.logging.interceptor)
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

@@ -1,6 +1,6 @@
 package com.example.domain.useCases.news
 
-import com.example.domain.reposatory.news.NewsRepository
+import com.example.domain.repository.news.NewsRepository
 
 class GetSourcesUsecase(private val repository: NewsRepository) {
 

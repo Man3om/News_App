@@ -11,7 +11,7 @@ import com.google.gson.annotations.SerializedName
 @Entity(tableName = "articles")
 data class ArticlesItemModel(
 	@PrimaryKey(autoGenerate = true)
-	var id : Int ,
+	var id : Int = 0 ,
 
 	@ColumnInfo(name = "sourceId")
     var sourceId : String,

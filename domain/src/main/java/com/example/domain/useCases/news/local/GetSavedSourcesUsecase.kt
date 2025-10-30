@@ -1,6 +1,6 @@
 package com.example.domain.useCases.news.local
 
-import com.example.domain.reposatory.news.NewsRepositoryLocalDataSource
+import com.example.domain.repository.news.NewsRepositoryLocalDataSource
 
 class GetSavedSourcesUsecase(private val repositoryLocal: NewsRepositoryLocalDataSource) {
 

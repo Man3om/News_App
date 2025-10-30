@@ -1,4 +1,4 @@
-package com.example.domain.reposatory.news
+package com.example.domain.repository.news
 
 import com.example.domain.entites.news.everythingResponseEntities.ArticlesItemEntity
 import com.example.domain.entites.news.sourceResponseEntities.SourcesItemEntity

@@ -13,4 +13,13 @@ fun ArticlesItemModel.toEntity() =
 
 fun SourcesItemEntity.toModel() = SourcesItemModel(country, name, description, language, id, category, url)
 
-fun ArticlesItemEntity.toModel() = ArticlesItemModel(sourceId, publishedAt, author, urlToImage, description, title, url, content)
+fun ArticlesItemEntity.toModel() = ArticlesItemModel(
+    sourceId = sourceId,
+    publishedAt = publishedAt,
+    author = author,
+    urlToImage = urlToImage,
+    description = description,
+    title = title,
+    url = url,
+    content = content,
+)

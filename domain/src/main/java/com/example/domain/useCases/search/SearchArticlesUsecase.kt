@@ -1,6 +1,6 @@
 package com.example.domain.useCases.search
 
-import com.example.domain.reposatory.news.SearchRepository
+import com.example.domain.repository.search.SearchRepository
 
 class SearchArticlesUsecase(private val repository: SearchRepository) {
 

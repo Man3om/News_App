@@ -1,6 +1,6 @@
 package com.example.domain.useCases.search.remote
 
-import com.example.domain.reposatory.news.SearchRepositoryRemoteDataSource
+import com.example.domain.repository.search.SearchRepositoryRemoteDataSource
 
 class SearchArticlesUsecase(private val repository: SearchRepositoryRemoteDataSource) {
 

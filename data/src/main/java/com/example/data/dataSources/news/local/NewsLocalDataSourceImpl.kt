@@ -3,9 +3,10 @@ package com.example.data.dataSources.news.local
 import android.util.Log
 import com.example.data.local.database.init.AppDatabase
 import com.example.data.mapper.toEntity
+import com.example.data.mapper.toModel
 import com.example.domain.entites.news.everythingResponseEntities.ArticlesItemEntity
 import com.example.domain.entites.news.sourceResponseEntities.SourcesItemEntity
-import com.example.domain.reposatory.news.NewsRepositoryLocalDataSource
+import com.example.domain.repository.news.NewsRepositoryLocalDataSource
 import com.example.domain.utils.base.Resources
 
 class NewsLocalDataSourceImpl : NewsRepositoryLocalDataSource {
@@ -27,6 +28,9 @@ class NewsLocalDataSourceImpl : NewsRepositoryLocalDataSource {
 
     override suspend fun insertSavedSources(sources: List<SourcesItemEntity>): Resources<Unit> {
         try {
+            val sources = sources.map {
+                it.toModel()
+            }
             AppDatabase.getInstance().appDao().insertSources(sources)
             return Resources.Success(Unit)
         } catch (e: Exception) {
@@ -50,11 +54,15 @@ class NewsLocalDataSourceImpl : NewsRepositoryLocalDataSource {
         sourceId: String
     ): Resources<Unit> {
         try {
-            data.forEach {
+            val dataModel = data.map {
+                it.toModel()
+            }
+
+            dataModel.forEach {
                 it.sourceId = sourceId
             }
             Log.d("insertSavedArticles", "insertSavedArticles: $data")
-            AppDatabase.getInstance().appDao().insertArticles(data)
+            AppDatabase.getInstance().appDao().insertArticles(dataModel)
             return Resources.Success(Unit)
         } catch (e: Exception) {
             return Resources.Error(e.message ?: "Couldn't insert Sources")

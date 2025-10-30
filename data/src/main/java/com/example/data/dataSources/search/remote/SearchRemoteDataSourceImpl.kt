@@ -3,7 +3,7 @@ package com.example.data.dataSources.search.remote
 import com.example.data.models.news.sourceResponseApiModel.SourcesResponseModel
 import com.example.data.remote.api.ApiManager
 import com.example.domain.entites.news.everythingResponseEntities.ArticlesItemEntity
-import com.example.domain.reposatory.news.SearchRepositoryRemoteDataSource
+import com.example.domain.repository.search.SearchRepositoryRemoteDataSource
 import com.example.domain.utils.base.Resources
 import com.google.gson.Gson
 

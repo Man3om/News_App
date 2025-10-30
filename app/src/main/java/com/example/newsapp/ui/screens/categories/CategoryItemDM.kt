@@ -1,6 +1,8 @@
-package com.example.data.models.category
+package com.example.newsapp.ui.screens.categories
 
+import com.example.newsapp.R
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.serialization.Serializable
 
 @Serializable
 data class CategoryItemDM(

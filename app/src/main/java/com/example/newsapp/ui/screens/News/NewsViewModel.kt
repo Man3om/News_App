@@ -4,23 +4,22 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.domain.entites.news.everythingResponseEntities.ArticlesItemEntity
 import com.example.domain.entites.news.sourceResponseEntities.SourcesItemEntity
-import com.example.domain.repository.news.NewsRepository
 import com.example.domain.useCases.news.GetNewsBySourceIdUsecase
 import com.example.domain.useCases.news.GetSourcesUsecase
 import com.example.domain.utils.base.Resources
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class NewsViewModel : ViewModel() {
+@HiltViewModel
+class NewsViewModel @Inject constructor( private val getSourcesUseCase : GetSourcesUsecase ,
+   private val getNewsBySourceIdUseCase : GetNewsBySourceIdUsecase) : ViewModel() {
     val selectedSourceId = MutableStateFlow<String>("")
     val selectedItemIndex = MutableStateFlow<Int>(-1)
     val sourcesResource = MutableStateFlow<Resources<List<SourcesItemEntity>>>(Resources.Initial())
     val articlesResource = MutableStateFlow<Resources<List<ArticlesItemEntity>>>(Resources.Initial())
-
-    val newsRepository : NewsRepository =
-    val getSourcesUseCase = GetSourcesUsecase()
-    val getNewsBySourceIdUseCase = GetNewsBySourceIdUsecase()
 
     fun getSources(categoryApiId: String) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -36,5 +35,4 @@ class NewsViewModel : ViewModel() {
             articlesResource.value = getNewsBySourceIdUseCase.execute(sourceId = sourceId)
         }
     }
-
 }

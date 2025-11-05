@@ -51,8 +51,10 @@ import com.example.newsapp.ui.screens.News.NewsScreen
 import com.example.domain.utils.base.Resources
 import com.example.newsapp.ui.screens.categories.CategoriesScreen
 import com.example.newsapp.ui.theme.NewsAppTheme
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

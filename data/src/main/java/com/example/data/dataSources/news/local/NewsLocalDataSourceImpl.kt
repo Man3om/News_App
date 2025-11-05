@@ -1,6 +1,7 @@
 package com.example.data.dataSources.news.local
 
 import android.util.Log
+import androidx.room.RoomDatabase
 import com.example.data.local.database.init.AppDatabase
 import com.example.data.mapper.toEntity
 import com.example.data.mapper.toModel
@@ -8,12 +9,14 @@ import com.example.domain.entites.news.everythingResponseEntities.ArticlesItemEn
 import com.example.domain.entites.news.sourceResponseEntities.SourcesItemEntity
 import com.example.domain.repository.news.NewsRepositoryLocalDataSource
 import com.example.domain.utils.base.Resources
+import javax.inject.Inject
 
-class NewsLocalDataSourceImpl : NewsRepositoryLocalDataSource {
+class NewsLocalDataSourceImpl @Inject constructor(private val roomDatabase: AppDatabase) :
+    NewsRepositoryLocalDataSource {
     override suspend fun getSavedSources(category: String): Resources<List<SourcesItemEntity>> {
         try {
-            val sources = AppDatabase.getInstance().appDao().getSources(category).map {
-               it.toEntity()
+            val sources = roomDatabase.appDao().getSources(category).map {
+                it.toEntity()
             }
 
             return if (sources.isNotEmpty()) {
@@ -31,7 +34,7 @@ class NewsLocalDataSourceImpl : NewsRepositoryLocalDataSource {
             val sources = sources.map {
                 it.toModel()
             }
-            AppDatabase.getInstance().appDao().insertSources(sources)
+            roomDatabase.appDao().insertSources(sources)
             return Resources.Success(Unit)
         } catch (e: Exception) {
             return Resources.Error(e.message ?: "Couldn't insert Sources")
@@ -40,7 +43,7 @@ class NewsLocalDataSourceImpl : NewsRepositoryLocalDataSource {
 
     override suspend fun getSavedArticles(sourceId: String): Resources<List<ArticlesItemEntity>> {
         try {
-            val dataArticles = AppDatabase.getInstance().appDao().getArticles(sourceId).map {
+            val dataArticles = roomDatabase.appDao().getArticles(sourceId).map {
                 it.toEntity()
             }
             return Resources.Success(dataArticles)
@@ -62,7 +65,7 @@ class NewsLocalDataSourceImpl : NewsRepositoryLocalDataSource {
                 it.sourceId = sourceId
             }
             Log.d("insertSavedArticles", "insertSavedArticles: $data")
-            AppDatabase.getInstance().appDao().insertArticles(dataModel)
+            roomDatabase.appDao().insertArticles(dataModel)
             return Resources.Success(Unit)
         } catch (e: Exception) {
             return Resources.Error(e.message ?: "Couldn't insert Sources")

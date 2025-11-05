@@ -36,7 +36,6 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.newsapp.R
-import com.example.newsapp.model.CategoryItemDM
 import com.example.newsapp.ui.destinations.NewsDestinations
 
 

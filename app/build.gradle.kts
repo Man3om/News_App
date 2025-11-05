@@ -4,7 +4,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-    // Kotlin serialization plugin for type safe routes and navigation arguments
+    id("com.google.devtools.ksp")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -43,7 +44,8 @@ android {
 }
 
 dependencies {
-
+    implementation("com.google.dagger:hilt-android:2.57.1")
+    ksp("com.google.dagger:hilt-android-compiler:2.57.1")
     implementation(libs.androidx.compose.foundation.layout)
     implementation(libs.androidx.browser)
     implementation (libs.androidx.compose.material.icons.extended)

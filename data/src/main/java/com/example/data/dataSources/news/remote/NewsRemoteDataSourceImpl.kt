@@ -3,18 +3,20 @@ package com.example.data.dataSources.news.remote
 import com.example.data.mapper.toEntity
 import com.example.data.models.news.everythingResponseApiModel.EverythingResponseModel
 import com.example.data.models.news.sourceResponseApiModel.SourcesResponseModel
-import com.example.data.remote.api.ApiManager
+import com.example.data.remote.api.WebServices
 import com.example.domain.entites.news.everythingResponseEntities.ArticlesItemEntity
 import com.example.domain.entites.news.sourceResponseEntities.SourcesItemEntity
 import com.example.domain.repository.news.NewsRepositoryRemoteDataSource
 import com.example.domain.utils.base.Resources
 import com.google.gson.Gson
+import javax.inject.Inject
 
-class NewsRemoteDataSourceImpl : NewsRepositoryRemoteDataSource {
+class NewsRemoteDataSourceImpl @Inject constructor(private val newsServices: WebServices) :
+    NewsRepositoryRemoteDataSource {
     override suspend fun getSources(category: String): Resources<List<SourcesItemEntity>> {
         return try {
             val response =
-                ApiManager.webServices().getNewsSources(categoryApiId = category)
+                newsServices.getNewsSources(categoryApiId = category)
 
             if (response.isSuccessful) {
                 val sources = response.body()?.sources?.map {
@@ -34,7 +36,7 @@ class NewsRemoteDataSourceImpl : NewsRepositoryRemoteDataSource {
 
     override suspend fun getNewsBySourceId(sourceId: String): Resources<List<ArticlesItemEntity>> {
         return try {
-            val response = ApiManager.webServices().getNewsBySource(sources = sourceId)
+            val response = newsServices.getNewsBySource(sources = sourceId)
 
             if (response.isSuccessful) {
                 val articles = response.body()?.articles?.map {

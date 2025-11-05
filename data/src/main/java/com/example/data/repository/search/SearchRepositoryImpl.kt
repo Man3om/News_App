@@ -4,11 +4,11 @@ import com.example.domain.entites.news.everythingResponseEntities.ArticlesItemEn
 import com.example.domain.repository.search.SearchRepository
 import com.example.domain.repository.search.SearchRepositoryRemoteDataSource
 import com.example.domain.utils.base.Resources
+import javax.inject.Inject
 
-class SearchRepoImpl(private val searchRemoteDataSource : SearchRepositoryRemoteDataSource ): SearchRepository {
+class SearchRepositoryImpl @Inject constructor(private val searchRemoteDataSource : SearchRepositoryRemoteDataSource ): SearchRepository {
     override suspend fun searchArticles(query: String): Resources<List<ArticlesItemEntity>> {
             val state = searchRemoteDataSource.searchArticles(query)
             return state
-
     }
 }

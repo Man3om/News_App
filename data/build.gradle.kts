@@ -4,6 +4,7 @@
      id("com.google.devtools.ksp")
      id("kotlin-parcelize")
      kotlin("plugin.serialization") version "2.0.21"
+     id("com.google.dagger.hilt.android")
  }
 
 android {
@@ -40,6 +41,8 @@ android {
 dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
+    implementation("com.google.dagger:hilt-android:2.57.1")
+    ksp("com.google.dagger:hilt-android-compiler:2.57.1")
     implementation(libs.material)
     implementation(project(":domain"))
     testImplementation(libs.junit)

@@ -7,9 +7,11 @@ import com.example.domain.repository.news.NewsRepository
 import com.example.domain.repository.news.NewsRepositoryLocalDataSource
 import com.example.domain.repository.news.NewsRepositoryRemoteDataSource
 import com.example.domain.utils.base.Resources
+import javax.inject.Inject
 
-class NewsRepoImpl(private val newsRemoteDataSource : NewsRepositoryRemoteDataSource,
-    private  val newsLocalDataSource : NewsRepositoryLocalDataSource) : NewsRepository{
+class NewsRepositoryImpl @Inject constructor(
+                         private val newsRemoteDataSource : NewsRepositoryRemoteDataSource,
+                         private  val newsLocalDataSource : NewsRepositoryLocalDataSource) : NewsRepository{
 
     override suspend fun getSources(category: String): Resources<List<SourcesItemEntity>> {
         val isConnected = true

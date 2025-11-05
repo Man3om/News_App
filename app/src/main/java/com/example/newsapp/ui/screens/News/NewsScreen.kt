@@ -40,8 +40,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
-import com.example.newsapp.api.model.everythingResponseApiModel.ArticlesItem
-import com.example.newsapp.api.model.sourceResponseApiModel.SourcesItemDM
+import com.example.domain.entites.news.everythingResponseEntities.ArticlesItemEntity
+import com.example.domain.entites.news.sourceResponseEntities.SourcesItemEntity
 import com.example.newsapp.ui.destinations.ArticleDestinations
 import com.example.domain.utils.base.Resources
 
@@ -103,7 +103,7 @@ fun NewsLazyColumn(
 @Composable
 fun NewsCard(
     modifier: Modifier = Modifier,
-    article: ArticlesItem?,
+    article: ArticlesItemEntity?,
     onNewsCardClick: (String, String, String) -> Unit
 ) {
     Card(
@@ -184,7 +184,7 @@ fun NewsSourcesTopRow(
     LaunchedEffect(viewModel.sourcesResource.collectAsState().value) {
         if (viewModel.sourcesResource.value is Resources.Success) {
             val reposeSuccess =
-                (viewModel.sourcesResource.value as Resources.Success<List<SourcesItemDM>>).response
+                (viewModel.sourcesResource.value as Resources.Success<List<SourcesItemEntity>>).response
             viewModel.selectedSourceId.value = reposeSuccess[0].id
             viewModel.selectedItemIndex.value = 0
         }
@@ -239,11 +239,11 @@ fun NewsSourcesTopRow(
 
 @Composable
 fun SourceItem(
-    item: SourcesItemDM,
+    item: SourcesItemEntity,
     modifier: Modifier = Modifier,
     selectedIndex: Int,
     index: Int,
-    onClick: (SourcesItemDM) -> Unit
+    onClick: (SourcesItemEntity) -> Unit
 ) {
     val selectedTextStyle = TextStyle(
         fontSize = 16.sp,
